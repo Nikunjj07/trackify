@@ -1,9 +1,47 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+  name String 
+  email String @unique
+  password String
+  habits Habit[] @relation(name: "ToUserRelation")
+  //add foreign keys
+}
+
+model Habit {
+  id Int @id @default(autoincrement())
+  user User @relation(name: "ToUserRelation",fields: [userId], references: [id])
+  userId String
+  name String
+  description String?
+  goalStreak Int
+  reminder Boolean //check again
+  checkIns CheckIn[] @relation(name: "toHabitRelation")
+  streaks Streak[] @relation(name: "toHabitStreak")
+  
+}
+
+model CheckIn {
+  id Int @id @default(autoincrement())
+  habit Habit @relation(name: "toHabitRelation",fields: [habitId], references: [id])
+  habitId  Int @unique
+  date DateTime @unique
+  completed Boolean @default(false)
+}
+
+model Streak {
+  id Int @id
+  habit Habit @relation(name: "toHabitStreak",fields: [habitId], references: [id])
+  habitId  Int @unique 
+  currentStreak Int
+  longestStreak Int
+  lastCheckInDate DateTime
 }
