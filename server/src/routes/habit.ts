@@ -91,4 +91,34 @@ habitRouter.put("/update/:id",async(req,res)=>{
 
 })
 
+habitRouter.delete("/delete/:id",async(req,res)=>{
+    const habitId = req.params.id;
+    
+    try{
+        const habit = await client.habit.findUnique({
+            where:{
+                id: Number(habitId)
+            }
+        })
+        if(!habit){
+            res.json({
+                message:"invalid habit id"
+            })
+            return
+        }
+
+        const deleted = await client.habit.delete({
+            where:{
+                id: Number(habitId)
+            }
+        })
+        res.json({
+            message:"habit deleted!"
+        })
+        return
+    }catch(e){
+        console.error
+    }
+})
+
 export default habitRouter;
