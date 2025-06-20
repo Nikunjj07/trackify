@@ -17,7 +17,8 @@ const habitSchema = zod.object({
 habitRouter.post("/add",async(req,res)=>{
     const body = req.body;
     const userId = (req as any).userId;
-    const success = habitSchema.safeParse(body);
+    console.log("check user", userId); ////
+    const {success} = habitSchema.safeParse(body);
     if (!success){
         res.json({
             message:"Invalid Inputs!"
@@ -44,5 +45,50 @@ habitRouter.post("/add",async(req,res)=>{
 })
 
 
+const updateHabitSchema = zod.object({
+    name: zod.string().optional(),
+    description: zod.string().optional(),
+    goalStreak: zod.number().optional(),
+    reminder: zod.boolean().optional(),
+});
+
+habitRouter.put("/update/:id",async(req,res)=>{
+    const habitId = req.params.id;
+    const body = req.body;
+    const userId = (req as any).userId;
+
+    const {success} = updateHabitSchema.safeParse(body);
+    if (!success){
+        res.json({
+            message:"Invalid Inputs!"
+        })
+        return
+    }
+    try{
+        const currentHabit = client.habit.findUnique({
+            where:{
+                id: Number(habitId)
+            }
+        })
+        if(!currentHabit){
+            res.json({
+                message:"Habit not found"
+            })
+            return
+        }
+        const updatedHabit = await client.habit.update({
+            where: { id: Number(habitId) },
+            data: body,
+        });
+        res.json({
+            message:"habit updated successfully!",
+            habit: updatedHabit
+        })
+
+    }catch(e){
+        console.error
+    }
+
+})
 
 export default habitRouter;

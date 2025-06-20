@@ -28,7 +28,8 @@ const habitSchema = zod_1.default.object({
 habitRouter.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
     const userId = req.userId;
-    const success = habitSchema.safeParse(body);
+    console.log("check user", userId); ////
+    const { success } = habitSchema.safeParse(body);
     if (!success) {
         res.json({
             message: "Invalid Inputs!"
@@ -36,7 +37,7 @@ habitRouter.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, functio
         return;
     }
     try {
-        const habit = client.habit.create({
+        const habit = yield client.habit.create({
             data: {
                 name: body.name,
                 userId: userId,
@@ -44,6 +45,51 @@ habitRouter.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, functio
                 goalStreak: body.goalStreak,
                 reminder: body.reminder
             }
+        });
+        res.json({
+            message: "added habit!"
+        });
+    }
+    catch (e) {
+        console.error;
+    }
+}));
+const updateHabitSchema = zod_1.default.object({
+    name: zod_1.default.string().optional(),
+    description: zod_1.default.string().optional(),
+    goalStreak: zod_1.default.number().optional(),
+    reminder: zod_1.default.boolean().optional(),
+});
+habitRouter.put("/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const habitId = req.params.id;
+    const body = req.body;
+    const userId = req.userId;
+    const { success } = updateHabitSchema.safeParse(body);
+    if (!success) {
+        res.json({
+            message: "Invalid Inputs!"
+        });
+        return;
+    }
+    try {
+        const currentHabit = client.habit.findUnique({
+            where: {
+                id: Number(habitId)
+            }
+        });
+        if (!currentHabit) {
+            res.json({
+                message: "Habit not found"
+            });
+            return;
+        }
+        const updatedHabit = yield client.habit.update({
+            where: { id: Number(habitId) },
+            data: body,
+        });
+        res.json({
+            message: "habit updated successfully!",
+            habit: updatedHabit
         });
     }
     catch (e) {
