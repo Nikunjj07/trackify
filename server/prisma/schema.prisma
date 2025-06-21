@@ -34,7 +34,6 @@ model CheckIn {
   habit Habit @relation(name: "toHabitRelation",fields: [habitId], references: [id])
   habitId  Int @unique
   date DateTime @unique
-  completed Boolean @default(false)
 }
 
 model Streak {
