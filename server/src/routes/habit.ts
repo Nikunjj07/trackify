@@ -121,4 +121,26 @@ habitRouter.delete("/delete/:id",async(req,res)=>{
     }
 })
 
+habitRouter.get("/",async(req,res)=>{
+    const userId = (req as any).userId;
+
+    if(!userId){
+        res.status(401).json({
+            message:"Unauthorized"
+        })
+        return
+    }
+
+    try{
+        const habits = await client.habit.findMany({
+            where:{
+                userId: userId
+            }
+        })
+        res.json(habits);
+    }catch(e){
+        console.error
+    }
+})
+
 export default habitRouter;
