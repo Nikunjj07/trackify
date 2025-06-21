@@ -14,7 +14,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     console.log("middleware here")
 
     if (!token) {
-        return res.status(401).json({ message: "Unauthorized: Missing or invalid token" });
+        return res.status(401).json({ message: "Unauthorized: Missing or invalid token" });       
     }
 
     try {
