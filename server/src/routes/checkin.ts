@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Router } from "express";
+import { updateStreak } from "../services/streakService";
 
 const checkInRouter = Router();
 const client = new PrismaClient();
@@ -36,6 +37,7 @@ checkInRouter.post("/",async(req,res)=>{
                 date: date.toISOString()
             }
         })
+        await updateStreak(habitId);
 
         res.json({
             checkIn: checkIn
