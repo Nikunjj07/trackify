@@ -38,7 +38,7 @@ export function SignUpCard() {
               })
             }}/>
 
-            <Button Label="Sign Up" OnClick={()=>{return name}}/> 
+            <Button size="long" Label="Sign Up" OnClick={()=>{return name}}/> 
             {/* add logic */}
           </form>
 
