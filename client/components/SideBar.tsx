@@ -1,11 +1,16 @@
+'use client'
 import { SidebarItem } from "./SidebarItem";
 
-export function SideBar(){
-    return(
-        <div className="w-72 border-r border-slate-300 h-screen mr-4 pt-28">
+async function getHabits(){
+    let response = fetch()
+}
 
-                <SidebarItem title="Habit1" href="/dashboard" icon="h"/>
-            
+export function SideBar({OnClick}:{OnClick: ()=> void}){
+
+    return(
+        <div>
+            <button className="p-2 pl-8 font-bold cursor-pointer" onClick={OnClick}>Add Habit</button>
+            <SidebarItem href={"/dashboard"} title="Home" />
         </div>
     )
 }

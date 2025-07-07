@@ -1,4 +1,3 @@
-import { SyntheticEvent } from "react";
 
 interface InputBoxType {OnChange:React.ChangeEventHandler<HTMLInputElement> |undefined;
     Placeholder:string;
