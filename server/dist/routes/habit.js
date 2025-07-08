@@ -96,4 +96,73 @@ habitRouter.put("/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, f
         console.error;
     }
 }));
+habitRouter.delete("/delete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const habitId = req.params.id;
+    try {
+        const habit = yield client.habit.findUnique({
+            where: {
+                id: Number(habitId)
+            }
+        });
+        if (!habit) {
+            res.json({
+                message: "invalid habit id"
+            });
+            return;
+        }
+        const deleted = yield client.habit.delete({
+            where: {
+                id: Number(habitId)
+            }
+        });
+        res.json({
+            message: "habit deleted!"
+        });
+        return;
+    }
+    catch (e) {
+        console.error;
+    }
+}));
+habitRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.userId;
+    if (!userId) {
+        res.status(401).json({
+            message: "Unauthorized"
+        });
+        return;
+    }
+    try {
+        const habits = yield client.habit.findMany({
+            where: {
+                userId: userId
+            }
+        });
+        res.json(habits);
+    }
+    catch (e) {
+        console.error;
+    }
+}));
+habitRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.userId;
+    const habitId = req.params.id;
+    if (!userId) {
+        res.status(401).json({
+            message: "Unauthorized"
+        });
+        return;
+    }
+    try {
+        const habit = yield client.habit.findFirst({
+            where: {
+                id: Number(habitId)
+            }
+        });
+        res.json(habit);
+    }
+    catch (e) {
+        console.error;
+    }
+}));
 exports.default = habitRouter;

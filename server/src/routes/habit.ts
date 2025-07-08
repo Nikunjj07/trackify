@@ -143,4 +143,27 @@ habitRouter.get("/",async(req,res)=>{
     }
 })
 
+habitRouter.get("/:id",async(req,res)=>{
+    const userId = (req as any).userId;
+    const habitId = req.params.id
+
+    if(!userId){
+        res.status(401).json({
+            message:"Unauthorized"
+        })
+        return
+    }
+
+    try{
+        const habit = await client.habit.findFirst({
+            where:{
+                id: Number(habitId)
+            }
+        })
+        res.json(habit);
+    }catch(e){
+        console.error
+    }
+})
+
 export default habitRouter;

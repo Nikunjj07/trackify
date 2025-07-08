@@ -11,10 +11,9 @@ declare module "express" {
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
         
     const token = req.cookies?.token;
-    console.log("middleware here")
 
     if (!token) {
-        return res.status(401).json({ message: "Unauthorized: Missing or invalid token" });       
+        return res.status(401).json({ message: "Unauthorized: Missing token" });       
     }
 
     try {

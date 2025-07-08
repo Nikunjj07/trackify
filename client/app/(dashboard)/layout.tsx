@@ -14,7 +14,7 @@ export default function Layout({
     <div className="flex flex-col h-screen overflow-hidden">
         <AppBar landing={false} />
         <div className="flex flex-row">
-            <div className="w-66 border-r border-zinc-800 overflow-y-auto h-full mr-4 pt-28">
+            <div className="w-66 border-r border-zinc-800 overflow-y-auto h-screen pt-28">
                 <SideBar OnClick={()=>{
                   setShowPopup(true)
                 }}/>
