@@ -24,16 +24,22 @@ function updateStreak(habitId) {
             }
         });
         if (checkins.length === 0) {
-            yield client.streak.update({
-                where: {
-                    habitId: habitId
+            yield client.streak.upsert({
+                where: { habitId },
+                update: {
+                    currentStreak: 0,
+                    longestStreak: 0,
                 },
-                data: {
-                    currentStreak: 0
-                }
+                create: {
+                    habitId,
+                    currentStreak: 0,
+                    longestStreak: 0,
+                    lastCheckInDate: null
+                },
             });
             return;
         }
+        console.log("in update");
         let currentStreak = 1;
         let longestStreak = 1;
         for (let i = checkins.length - 2; i >= 0; i--) {
@@ -50,13 +56,21 @@ function updateStreak(habitId) {
                 break;
             }
         }
-        yield client.streak.update({
-            where: { habitId: habitId },
-            data: {
-                currentStreak: currentStreak,
+        const lastCheckInDate = new Date(checkins[checkins.length - 1].date);
+        yield client.streak.upsert({
+            where: { habitId },
+            update: {
+                currentStreak,
                 longestStreak,
-                lastCheckInDate: checkins[checkins.length - 1].date,
+                lastCheckInDate,
+            },
+            create: {
+                habitId,
+                currentStreak,
+                longestStreak,
+                lastCheckInDate,
             },
         });
+        console.log("updated");
     });
 }

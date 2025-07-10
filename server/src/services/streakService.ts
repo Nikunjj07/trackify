@@ -14,17 +14,22 @@ export async function updateStreak(habitId: number){
     })
 
     if(checkins.length === 0){
-        await client.streak.update({
-            where:{
-                habitId:habitId
+        await client.streak.upsert({
+            where: { habitId },
+            update: {
+            currentStreak: 0,
+            longestStreak: 0,
             },
-            data:{
-                currentStreak: 0
-            }
-        })
+            create: {
+            habitId,
+            currentStreak: 0,
+            longestStreak: 0,
+            lastCheckInDate:null
+            },
+        });
         return
     }
-
+    console.log("in update")
     let currentStreak = 1;
     let longestStreak = 1;
 
@@ -43,12 +48,21 @@ export async function updateStreak(habitId: number){
             break
         }
     }
-    await client.streak.update({
-        where: { habitId: habitId },
-        data: {
-            currentStreak:currentStreak,
-            longestStreak,
-            lastCheckInDate: checkins[checkins.length - 1].date,
+     const lastCheckInDate = new Date(checkins[checkins.length - 1].date);
+
+    await client.streak.upsert({
+        where: { habitId },
+        update: {
+        currentStreak,
+        longestStreak,
+        lastCheckInDate,
         },
-    })
+        create: {
+        habitId,
+        currentStreak,
+        longestStreak,
+        lastCheckInDate,
+        },
+    });
+    console.log("updated")
 }

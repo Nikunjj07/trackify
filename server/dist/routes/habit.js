@@ -22,13 +22,12 @@ habitRouter.use(middleware_1.authMiddleware);
 const habitSchema = zod_1.default.object({
     name: zod_1.default.string(),
     description: zod_1.default.string().optional(),
-    goalStreak: zod_1.default.number(),
-    reminder: zod_1.default.boolean()
+    streakGoal: zod_1.default.number()
 });
 habitRouter.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
     const userId = req.userId;
-    console.log("check user", userId); ////
+    console.log("check user", body); ////
     const { success } = habitSchema.safeParse(body);
     if (!success) {
         res.json({
@@ -42,8 +41,7 @@ habitRouter.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, functio
                 name: body.name,
                 userId: userId,
                 description: body.description,
-                goalStreak: body.goalStreak,
-                reminder: body.reminder
+                goalStreak: body.streakGoal
             }
         });
         res.json({
@@ -51,8 +49,10 @@ habitRouter.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
     }
     catch (e) {
-        console.error;
+        console.error();
+        return;
     }
+    return;
 }));
 const updateHabitSchema = zod_1.default.object({
     name: zod_1.default.string().optional(),
@@ -138,6 +138,7 @@ habitRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 userId: userId
             }
         });
+        console.log(habits);
         res.json(habits);
     }
     catch (e) {
@@ -157,6 +158,9 @@ habitRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function
         const habit = yield client.habit.findFirst({
             where: {
                 id: Number(habitId)
+            },
+            include: {
+                streak: true
             }
         });
         res.json(habit);

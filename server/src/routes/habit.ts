@@ -10,14 +10,13 @@ habitRouter.use(authMiddleware as RequestHandler)
 const habitSchema = zod.object({
     name: zod.string(),
     description: zod.string().optional(),
-    goalStreak: zod.number(),
-    reminder: zod.boolean()
+    streakGoal: zod.number()
 })
 
 habitRouter.post("/add",async(req,res)=>{
     const body = req.body;
     const userId = (req as any).userId;
-    console.log("check user", userId); ////
+    console.log("check user", body); ////
     const {success} = habitSchema.safeParse(body);
     if (!success){
         res.json({
@@ -31,16 +30,17 @@ habitRouter.post("/add",async(req,res)=>{
                 name:body.name,
                 userId: userId,
                 description: body.description,
-                goalStreak: body.goalStreak,
-                reminder: body.reminder
+                goalStreak: body.streakGoal
             }
         });
         res.json({
             message:"added habit!"
         })
     }catch(e){
-        console.error
+        console.error()
+        return
     }
+    return
 
 })
 
@@ -137,6 +137,7 @@ habitRouter.get("/",async(req,res)=>{
                 userId: userId
             }
         })
+        console.log(habits)
         res.json(habits);
     }catch(e){
         console.error
@@ -158,7 +159,10 @@ habitRouter.get("/:id",async(req,res)=>{
         const habit = await client.habit.findFirst({
             where:{
                 id: Number(habitId)
-            }
+            },
+            include:{
+                streak:true
+            } 
         })
         res.json(habit);
     }catch(e){

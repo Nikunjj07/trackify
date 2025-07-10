@@ -13,7 +13,6 @@ model User {
   email String @unique
   password String
   habits Habit[] @relation(name: "ToUserRelation")
-  //add foreign keys
 }
 
 model Habit {
@@ -25,22 +24,22 @@ model Habit {
   goalStreak Int
   reminder Boolean @default(false) //check again
   checkIns CheckIn[] @relation(name: "toHabitRelation")
-  streaks Streak[] @relation(name: "toHabitStreak")
-  
+  streak Streak? @relation(name: "HabitToStreak")
 }
 
 model CheckIn {
   id Int @id @default(autoincrement())
   habit Habit @relation(name: "toHabitRelation",fields: [habitId], references: [id])
-  habitId  Int @unique
+  habitId  Int
   date DateTime @unique
+  @@unique([habitId, date])
 }
 
 model Streak {
-  id Int @id
-  habit Habit @relation(name: "toHabitStreak",fields: [habitId], references: [id])
+  id Int @id @default(autoincrement())
+  habit Habit @relation(name: "HabitToStreak",fields: [habitId], references: [id])
   habitId  Int @unique 
   currentStreak Int @default(0)
   longestStreak Int @default(0)
-  lastCheckInDate DateTime
+  lastCheckInDate DateTime?
 }
