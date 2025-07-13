@@ -1,4 +1,5 @@
 'use client'
+import { redirect } from "next/navigation";
 import { AuthHeader } from "./ui/AuthHeader";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
@@ -7,9 +8,34 @@ import { useState } from "react"
 
 export function SignInCard() {
   const [postInput,setPostInput] = useState({
-        email: "",
-        password: "",
-    })
+      email: "",
+      password: "",
+  })
+
+  const signInRequest = async({email, password}:{email:string,password:string}) => {
+    try{
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/signin`,{
+      method:"POST",
+      credentials:"include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password
+      }),
+      })
+      if(!response.ok){
+        const error = await response.json()
+        throw new Error(error.message||"SignIn Failed")
+      }
+      redirect('/dashboard')
+      
+    }catch(e){
+      console.error();
+    }
+
+  }
 
   return (
     <Card>
@@ -31,8 +57,11 @@ export function SignInCard() {
                 })
             }}/>
 
-            <Button size="long" Label="Sign Up" OnClick={()=>{}}/> 
-            {/* add logic */}
+            <Button size="long" Label="Sign Up" OnClick={()=>{
+              signInRequest({
+                email:postInput.email,
+                password:postInput.password})
+            }}/> 
           </form>
 
           <div className="mt-6 text-center">
