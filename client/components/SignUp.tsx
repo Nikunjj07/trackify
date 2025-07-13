@@ -1,5 +1,5 @@
 'use client'
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { AuthHeader } from "./ui/AuthHeader";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
@@ -7,6 +7,7 @@ import { InputBox } from "./ui/InputBox";
 import { useState } from "react"
 
 export function SignUpCard() {
+  const router = useRouter();
   const [postInput,setPostInput] = useState({
       name:"",
       email: "",
@@ -32,7 +33,8 @@ export function SignUpCard() {
           const error = await response.json()
           throw new Error(error.message||"SignUp Failed")
         }
-        redirect('/dashboard')        
+        
+        router.push('/dashboard')        
       }catch(e){
         console.error();
       }
@@ -43,7 +45,10 @@ export function SignUpCard() {
         <AuthHeader Label="Create Account" Desc="Enter your details to get started"/>
 
         <div className="p-6">
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={(e)=>{
+            e.preventDefault();
+            signUpRequest(postInput);
+          }}>
             <InputBox Label="Full Name" Placeholder="John Doe" OnChange={(e)=>{
               setPostInput({
                 ...postInput,
@@ -65,13 +70,7 @@ export function SignUpCard() {
               })
             }}/>
 
-            <Button size="long" Label="Sign Up" OnClick={()=>{
-              signUpRequest({
-                name:postInput.name,
-                email:postInput.email,
-                password:postInput.password
-              })
-            }}/> 
+            <Button size="long" Label="Sign Up"/> 
           </form>
 
           <div className="mt-6 text-center">

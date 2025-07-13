@@ -1,5 +1,5 @@
 'use client'
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AuthHeader } from "./ui/AuthHeader";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
@@ -7,6 +7,7 @@ import { InputBox } from "./ui/InputBox";
 import { useState } from "react"
 
 export function SignInCard() {
+  const router = useRouter();
   const [postInput,setPostInput] = useState({
       email: "",
       password: "",
@@ -29,7 +30,7 @@ export function SignInCard() {
         const error = await response.json()
         throw new Error(error.message||"SignIn Failed")
       }
-      redirect('/dashboard')
+      router.push('/dashboard')
       
     }catch(e){
       console.error();
@@ -42,7 +43,7 @@ export function SignInCard() {
         <AuthHeader Label="Welcome Back" Desc="Enter your details to get started"/>
 
         <div className="p-6">
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={(e)=>{e.preventDefault()}}>
             <InputBox Label="Email" Placeholder="johndoe@gmail.com" OnChange={(e)=>{
                 setPostInput({
                     ...postInput,
