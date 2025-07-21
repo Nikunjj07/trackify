@@ -15,4 +15,4 @@ app.use(cookieParser())
 
 app.use("/api",mainRouter)
 
-app.listen(3003);
+app.listen(3000);
