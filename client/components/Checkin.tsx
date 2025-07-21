@@ -1,5 +1,5 @@
 'use client'
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useState } from "react"
 import { Button } from "./ui/Button"
 
 export function CheckIn({OnSubmit, AfterSubmit, Label, Streak}:{OnSubmit:()=>void,AfterSubmit:()=>void,Label:string, Streak:ReactNode}){

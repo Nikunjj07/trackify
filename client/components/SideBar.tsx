@@ -1,10 +1,10 @@
 'use client'
-import { useEffect, useState } from "react";
+import { HabitType } from "@/types";
 import { SidebarItem } from "./SidebarItem";
 
 
 
-export function SideBar({habits, OnClick}:{habits:any[],OnClick: ()=> void}){
+export function SideBar({habits, OnClick}:{habits:HabitType[],OnClick: ()=> void}){
     
     return(
         <div>

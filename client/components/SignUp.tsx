@@ -1,5 +1,5 @@
 'use client'
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AuthHeader } from "./ui/AuthHeader";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
@@ -36,7 +36,7 @@ export function SignUpCard() {
         
         router.push('/dashboard')        
       }catch(e){
-        console.error();
+        console.error("error", e);
       }
     }
 

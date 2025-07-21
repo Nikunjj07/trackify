@@ -3,11 +3,12 @@ import { CheckIn } from "@/components/Checkin"
 import { HeatMapCard } from "@/components/HeatMap";
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import { CheckInType, HabitType } from "@/types";
 
-export default function habit(){
+export default function Habit(){
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const {id} = useParams()
-    const [habit,setHabit]=useState<any>([])
+    const [habit,setHabit]=useState<HabitType | null>(null)
     const [checkins, setCheckins] = useState([]);
     const fetchHabit = async() => {
         try{
@@ -18,7 +19,7 @@ export default function habit(){
             const data = await response.json();
             setHabit(data);
         }catch(e){
-            console.error
+            console.error(e)
         }
     }
     const checkInHabit = async()=>{
@@ -37,7 +38,7 @@ export default function habit(){
             console.log("Checked In!")
           }
         }catch(e){
-            console.error()
+            console.error(e)
         }
     }
     useEffect(()=>{
@@ -50,22 +51,22 @@ export default function habit(){
                 const data = await response.json();
                 setCheckins(data.checkIns);
             }catch(e){
-                console.error
+                console.error(e)
             }
             
         }
         fetchCheckins();
-    },[])
+    },[backendUrl, id])
 
     useEffect(()=>{
         fetchHabit();
-    },[]);
+    },[fetchHabit]);
 
     const handleAddHabit = async () => {
         fetchHabit();
     };
 
-    const transformCheckins = (checkIns: any[]) => {
+    const transformCheckins = (checkIns: CheckInType[]) => {
     const countByDate: { [date: string]: number } = {};
 
     checkIns.forEach((ci) => {
@@ -85,7 +86,7 @@ export default function habit(){
 
 
     return <div className="flex flex-col h-screen w-full items-center justify-around">
-        <CheckIn OnSubmit={checkInHabit} AfterSubmit={handleAddHabit} Label={habit.name || "Habit"} Streak={habit.streak?.currentStreak || 0}/>
+        <CheckIn OnSubmit={checkInHabit} AfterSubmit={handleAddHabit} Label={habit?.name || "Habit"} Streak={habit?.streak?.currentStreak || 0}/>
         <div className="min-w-2xl min-h-60">
             <HeatMapCard values={transformCheckins(checkins)}/>
         </div>

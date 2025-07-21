@@ -33,7 +33,7 @@ export function SignInCard() {
       router.push('/dashboard')
       
     }catch(e){
-      console.error();
+      console.error(e);
     }
 
   }
@@ -58,7 +58,7 @@ export function SignInCard() {
                 })
             }}/>
 
-            <Button size="long" Label="Sign Up" OnClick={()=>{
+            <Button size="long" Label="Sign In" OnClick={()=>{
               signInRequest({
                 email:postInput.email,
                 password:postInput.password})

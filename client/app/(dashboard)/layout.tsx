@@ -2,6 +2,7 @@
 import { AppBar } from "@/components/AppBar";
 import { PopUpInput } from "@/components/PopUpInput";
 import { SideBar } from "@/components/SideBar";
+import { HabitType } from "@/types";
 import { JSX, useEffect, useState } from "react";
 
 export default function Layout({
@@ -10,8 +11,9 @@ export default function Layout({
   children: React.ReactNode;
 }): JSX.Element {
   const [showPopup, setShowPopup] = useState(false)
-  const [habits, setHabits] = useState<any[]>([]);
+  const [habits, setHabits] = useState<HabitType[]>([]);
   const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  
   const fetchHabits = async()=>{
       try {
         const response = await fetch(`${backendURL}/habit`,{
@@ -26,26 +28,31 @@ export default function Layout({
   }
   useEffect(() => {
     fetchHabits();
-  }, []);
+  }, [fetchHabits]);
 
   const handleAddHabit = async () => {
     await fetchHabits();
     setShowPopup(false);
   };
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
-        <AppBar landing={false} />
-        <div className="flex flex-row">
-            <div className="w-66 border-r border-zinc-800 overflow-y-auto h-screen pt-28">
-                <SideBar habits={habits} OnClick={()=>{
-                  setShowPopup(true)
-                }}/>
-            </div>
-            <div className="flex-5">
-                {children}
-            </div>
-        </div>
-        {showPopup && (<PopUpInput OnSubmit={handleAddHabit} OnClose={()=>setShowPopup(false)}/>) }
-    </div>
+    
+      <div className="flex flex-col h-screen overflow-hidden">
+        
+          <AppBar landing={false} />
+          <div className="flex flex-row">
+              <div className="w-66 border-r border-zinc-800 overflow-y-auto h-screen pt-28">
+                  <SideBar habits={habits} OnClick={()=>{
+                    setShowPopup(true)
+                  }}/>
+              </div>
+              <div className="flex-5">
+                    {children}
+              </div>
+          </div>
+          {showPopup && (<PopUpInput OnSubmit={handleAddHabit} OnClose={()=>setShowPopup(false)}/>) }
+        
+      </div>
+
+    
   );
 }

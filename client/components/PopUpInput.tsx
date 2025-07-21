@@ -23,7 +23,7 @@ export function PopUpInput({OnClose, OnSubmit}:{OnClose:()=>void, OnSubmit: ()=>
             OnSubmit()
           }
         }catch(e){
-            console.error()
+            console.error(e)
         }
       }
 
